@@ -76,7 +76,8 @@
 		<img alt="" src="./login.png">
 		<form action="./loginAction.jsp" method="post" onsubmit="return check()">
 			<input type="text" name="id" id="id" maxlength="15"
-				placeholder="아이디를 입력하세요"> <input type="password" name="pw"
+				placeholder="아이디를 입력하세요">
+			<input type="password" name="pw"
 				maxlength="20" placeholder="비밀번호를 입력하세요"><br>
 			<button type="reset">RESET</button>
 			<br>
