@@ -5,66 +5,76 @@
 <head>
 <meta charset="UTF-8">
 <title>index.jsp</title>
-<style>
+<style type="text/css">
 body{
-background-image:url("./appleBack.jpg");
-background-position: center;
-background-repeat: no repeat;
-background-size: auto;
 }
-#loginbox {
-	margin: 0 auto;
-	margin-top:100px;
+.loginbox {
+	position:absolute;
+	margin: -100px 0 0 -200px;
+	top:50%;
+	left:50%;
 	width: 400px;
-	height: 180px;
-	border: 5px solid gray;
-	border-radius: 5px;
-	}
+	height: 200px;
+	border: 1px solid gray;
+	padding: 20px 20px;
+}
 
 #loginimg {
-	height: 200px;
-	width: 200px;
+	height: 100%;
+	width: calc(100% / 2);
 	float: left;
-	padding:10px;
 	box-sizing: border-box;
+	text-align: center;
 }
-
-#loginimg img {
-	height: 160px;
+#loginimg img{
+	height: 100%;
+	vertical-align: middle;
 }
 
 #logininput {
 	height: 200px;
 	width: 200px;
-	padding: 10px;
 	float: left;
 	margin-top: 30px;
 	text-align: center;
 	box-sizing: border-box;
 }
-
-#logininput input, button {
-	margin: 0;
-	padding: 0;
-	width: 90%;
+#logininput input, #logininput button{
+	margin:0px;
+	padding:0px;
+	border: 1px gray solid;
+	width: 100%;
 	height: 30px;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 </style>
 </head>
 <body>
 	<%@ include file="./menu.jsp"%>
 
-	<div id="loginbox">
+	<div class="loginbox">
 		<div id="loginimg">
 			<img alt="login" src="./login.png">
 		</div>
 		<div id="logininput">
-			<input type="text" id="id" name="id" placeholder="ID"> <input
-				type="password" id="pw" name="pw" placeholder="PW">
-			<button type="submit">LOGIN</button>
-
+			<!-- ./loginAction 서블릿으로 전송하겠습니다.
+				java + web -> servlet
+				java코드 속에 html코드를 넣었어요.
+				서블릿 2.5이후 기술은 그냥 사용.
+				서블릿 2.5이전 기술은 web.xml에 설정을 적어줍니다.
+				
+				html + java
+				html코드 속에 자바를 넣었어요.
+			-->
+			<form action="./loginAction" method="post">
+				<input type="text" id="id" name="id" 
+				placeholder="아이디를 입력하세요" required="required">
+				<input type="password" id="pw" name="pw" 
+				placeholder="암호를 입력하세요" required="required">
+				<button type="submit">LOGIN</button>
+			</form>
 		</div>
 	</div>
+
 </body>
 </html>
