@@ -6,18 +6,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.mariadb.jdbc.internal.com.read.dao.Results;
+
 import com.gangminlee.db.DBConnection;
 import com.gangminlee.dto.BoardDTO;
 
 public class BoardDAO {
-	public com.gangminlee.dto.BoardDTO detail(int bno) {
-		com.gangminlee.dto.BoardDTO dto = new com.gangminlee.dto.BoardDTO();
+	public BoardDTO detail(int bno) {
+		BoardDTO dto = new BoardDTO();
 
-		DBConnection db = new DBConnection();
-		Connection conn = db.dbConn();
+		// DBConnection db = new DBConnection();
+		Connection conn = DBConnection.dbConn();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String detail = "SELECT * FROM boardview WHERE bno=?";
+		// 여기에서 +1 시키기
+		countUp(bno);
 		try {
 			pstmt = conn.prepareStatement(detail);
 			pstmt.setInt(1, bno);
@@ -31,7 +35,6 @@ public class BoardDAO {
 				dto.setId(rs.getString("id"));
 				dto.setBcount(rs.getInt("bcount"));
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -46,10 +49,44 @@ public class BoardDAO {
 		return dto;
 	}
 
-	public ArrayList<com.gangminlee.dto.BoardDTO> list() {
+	private void countUp(int bno) {
+		Connection conn = DBConnection.dbConn();
+		PreparedStatement pstmt = null;
+		String sql = "UPDATE board SET bcount = bcount+1 WHERE bno=?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			pstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(null, pstmt, conn);
+		}
+
+	}
+
+	private void closeAll(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public ArrayList<BoardDTO> list() {
 		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
-		DBConnection db = new DBConnection();
-		Connection conn = db.dbConn();
+		// DBConnection db = new DBConnection();
+		Connection conn = DBConnection.dbConn();
 		PreparedStatement pstmt = null;
 		String query = "SELECT * FROM boardview";
 		ResultSet rs = null;
@@ -59,7 +96,7 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				com.gangminlee.dto.BoardDTO dto = new com.gangminlee.dto.BoardDTO();
+				BoardDTO dto = new BoardDTO();
 				dto.setBno(rs.getInt("bno"));
 				dto.setBtitle(rs.getString("btitle"));
 				dto.setBdate(rs.getString("bdate"));
@@ -76,50 +113,101 @@ public class BoardDAO {
 		return list;
 	}
 
+	// 글쓰기 2021-07-06
 	public void insert(BoardDTO dto) {
-		// conn객체 생성 pstmt
+		// connê°�ì²´ ìƒ�ì„± pstmt
 		Connection conn = DBConnection.dbConn();
 		PreparedStatement pstmt = null;
-		String sql = "INSERT INTO board (btitle, bcontent, no) " + "VALUES (?,?, (SELECT no FROM login WHERE id=?))";
-		// 우리가 받은 값은 ID인데 데이터베이스에는 no를 저장해야함.
-		// 서브쿼리로 돌려서 no를 뽑아 저장시킴.
+		String sql = "INSERT INTO board (btitle, bcontent, no) " + "VALUES (?, ?, (SELECT no FROM login WHERE id=?))";
+		// 우리가 받은 값은 ID인데 데이터베이스에는 no를 저장해야 함.
+		// 서브쿼리로 돌려서 no를 뽑아 저장시킵니다
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, dto.getBtitle());
-			pstmt.setString(2, dto.getBtitle());
+			pstmt.setString(2, dto.getBcontent());
 			pstmt.setString(3, dto.getId());
 			int count = pstmt.executeUpdate();
-			System.out.println(count + "개 행이 영향을 받음.");
-		} catch (Exception e) {
+			System.out.println(count + "개 행이 영향을 받았습니다.");
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			{
-				try {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			closeAll(null, pstmt, conn);
+
 		}
+
 	}
 
 	public int delete(int bno, String id) {
-
 		int result = 0;
 		Connection conn = DBConnection.dbConn();
 		PreparedStatement pstmt = null;
-		String sql = "DELETE FROM board WHERE bno=? AND no=(SELECT no FROM login where id=?)";
+		String sql = "DELETE FROM board WHERE bno=? " + "AND no=(SELECT no FROM login WHERE id=?)";
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bno);
 			pstmt.setString(2, id);
 			result = pstmt.executeUpdate();
+			System.out.println(result + " !!!!!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(null, pstmt, conn);
 			
+		}
+
+		return result;
+	}
+
+	public BoardDTO update(int bno, String id) {
+		BoardDTO dto = null;
+		// conn = dbConn()
+		Connection conn = DBConnection.dbConn();
+		// pstmt
+		PreparedStatement pstmt = null;
+		// resultSet
+		ResultSet rs = null;
+		// sql detail과 흡사하지만 +no가 들어갑니다
+		String sql = "SELECT * FROM board WHERE bno=? AND no=(SELECT no FROM login WHERE id=?)";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			pstmt.setString(2, id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				dto = new BoardDTO();
+				dto.setBno(rs.getInt("bno"));// 수정한 자신의 글로 돌아가기위해
+				dto.setBtitle(rs.getString("btitle"));
+				dto.setBcontent(rs.getString("bcontent"));
+				// dto.setId(rs.getString("id"));//없어도 되겠지만 가져갑니다
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(rs, pstmt, conn);
+		}
+
+		return dto;
+	}
+
+	public void update2(BoardDTO dto) {
+		Connection conn = DBConnection.dbConn();
+		PreparedStatement pstmt = null;
+		String sql = "UPDATE board SET btitle=?, bcontent=? " + "WHERE bno=? AND no=(SELECT no FROM login WHERE id=?)";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getBtitle());
+			pstmt.setString(2, dto.getBcontent());
+			pstmt.setInt(3, dto.getBno());
+			pstmt.setString(4, dto.getId());
+			pstmt.execute();// select제외한 나머지
+			// pstmt.executeQuery(); //select
+			// pstmt.executeUpdate(); //영향받은 행이 몇 개? 리턴타입 int
+
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -135,7 +223,6 @@ public class BoardDAO {
 			}
 		}
 
-		return result;
 	}
 
 }

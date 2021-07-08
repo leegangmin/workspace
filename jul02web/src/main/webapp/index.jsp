@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+if(session.getAttribute("id") != null){
+	response.sendRedirect("./board.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,7 +59,7 @@ body{
 
 	<div class="loginbox">
 		<div id="loginimg">
-			<img alt="login" src="./login.png">
+			<img alt="bonobono" src="./bono.png">
 		</div>
 		<div id="logininput">
 			<!-- ./loginAction 서블릿으로 전송하겠습니다.
@@ -66,13 +71,18 @@ body{
 				html + java
 				html코드 속에 자바를 넣었어요.
 			-->
-			<form action="./loginAction" method="post">
+			<form action="./loginAction" method="post" onsubnit="return check()">
 				<input type="text" id="id" name="id" 
 				placeholder="아이디를 입력하세요" required="required">
 				<input type="password" id="pw" name="pw" 
 				placeholder="암호를 입력하세요" required="required">
 				<button type="submit">LOGIN</button>
+				<a href="./join.jsp">JOIN</a>
 			</form>
+<!-- 
+ 				<button type="button" onclick="location.href='./join.jsp'">
+				</button>
+ -->
 		</div>
 	</div>
 

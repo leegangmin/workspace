@@ -1,11 +1,9 @@
 package com.gangminlee.dto;
 
-//������ ���۶� ����ϴ� ��ü�Դϴ�.
-//ArrayList<BoardDTO>�� ��ڽ��ϴ�.
 public class BoardDTO {
 	private int bno, bcount;
 	private String btitle, bdate, name, id;
-	private String bcontent;//detail���� ����� ���� �����Դϴ�.
+	private String bcontent;
 	
 	public int getBno() {
 		return bno;

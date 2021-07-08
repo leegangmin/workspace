@@ -51,4 +51,35 @@ public class LoginDAO {
 		}
 		return login;
 	}
+	
+	public int join(LoginDTO dto) {
+		int count = 0;
+		
+		Connection conn = DBConnection.dbConn();
+		PreparedStatement pstmt = null;
+		String sql = "INSERT INTO login (name, id, pw, email) VALUES (?,?,?,?)";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getName());
+			pstmt.setString(2, dto.getId());
+			pstmt.setString(3, dto.getPw());
+			pstmt.setString(4, dto.getEmail());
+			
+			count = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return count;
+	}
 }

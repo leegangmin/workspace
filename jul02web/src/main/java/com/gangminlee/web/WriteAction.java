@@ -21,7 +21,7 @@ public class WriteAction extends HttpServlet {
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		//response.setCharacterEncoding("UTF-8");
 		PrintWriter pw = response.getWriter();

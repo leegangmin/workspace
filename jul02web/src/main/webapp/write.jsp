@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
-//로그인 한 사람만 글쓰기에 접근할 수 있음.
+//로그인 한 사람만 글쓰기에 접근할 수 있습니다.
 if (session.getAttribute("id") == null) {
 	//페이지 이동
 	response.sendRedirect("./index.jsp");
@@ -20,7 +20,7 @@ body {
 
 #write {
 	min-height: 500px;
-	min-width: 500px;
+	width: 800px;
 	background-color: gray;
 	margin: 0 auto;
 	padding: 10px;
@@ -47,7 +47,6 @@ body {
 	border: 1px solid #82E0AA;
 }
 </style>
-
 <script type="text/javascript">
 	function check() {
 		//alert("!");
@@ -65,8 +64,7 @@ body {
 			content.focus();
 			return false;
 		}
-
-		//return false;
+		//실행됩니다.
 	}
 </script>
 <!-- include libraries(jQuery, bootstrap) -->
@@ -101,18 +99,6 @@ body {
 			});
 		});
 	</script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body>
 </html>
