@@ -10,9 +10,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>	
-
-
+	
 <%
 String ip = Util.getIP(request);
 //DTO만들기
@@ -149,7 +147,6 @@ LogDAO.insertLog(ldto);
 	vertical-align: middle;
 }
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 function update(bno){
 	if(confirm("수정하시겠습니까?")){
@@ -160,14 +157,6 @@ function del(bno){
 	if(confirm("삭제하시겠습니까")){
 		alert("삭제합니다.");
 		location.href="delete?bno="+bno;
-	}
-}
-function check(){
-	var comment = $("#comment1").val();
-	if(comment.length < 5){
-		alert("댓글은 5자 이상이어야 합니다.");
-		$("#comment1").focus();
-		return false;
 	}
 }
 </script>
@@ -188,44 +177,31 @@ function check(){
 	ArrayList<CommentDTO> list = cdao.commentList(bno);
 	
 	//값이 오는지 테스트
-	/*for(CommentDTO cdto : list){
+	for(CommentDTO cdto : list){
 		System.out.print(cdto.getCno());
 		System.out.print(cdto.getCcontent());
 		System.out.println();
 		
 	}
-	*/
+	
 	%>
 	<hr>
 	<div id="detail">
 		<div id="title">
 			<%=dto.getBtitle()%>
-			<c:set var="dtoId" value="<%=dto.getId() %>"/>
-			<c:if test="${sessionScope.id eq dtoId }">
+			<%
+			if (session.getAttribute("id") != null && ((String) session.getAttribute("id")).equals(dto.getId())) {
+			%>
 			<img alt="delete" src="./delete.png" height="20px"
 				onclick="return del(<%=dto.getBno()%>);"
 				style="vertical-align: middle;"> <img alt="update"
 				src="./update.png" height="20px"
 				onclick="return update(<%=dto.getBno()%>); "
 				style="vertical-align: middle;">
-			</c:if>
+			<%
+			}
+			%>
 		</div>
-			
-			
-			<!-- 
-			<%
-			//if (session.getAttribute("id") != null && ((String) session.getAttribute("id")).equals(dto.getId())) {
-			%>
-			<img alt="delete" src="./delete.png" height="20px"
-				onclick="return del(<%=dto.getBno()%>);"
-				style="vertical-align: middle;"> <img alt="update"
-				src="./update.png" height="20px"
-				onclick="return update(<%=dto.getBno()%>); "
-				style="vertical-align: middle;">
-			<%
-			//}
-			%>
-			 -->
 		<div id="date">
 			<div id="date2"><%=dto.getName()%><br>(<%=dto.getId()%>)
 			</div>
@@ -236,43 +212,28 @@ function check(){
 	<div id="comments">
 		<c:forEach items="<%=list %>" var="i">
 			<div id="comment">
-				<div id="commentId"> ${i.name } / ${i.id } / ${i.cdate } / ${i.cip } Like ${i.clike }</div>
+				<div id="commentId"> ${i.name } ${i.id } ${i.cdate } Like ${i.clike }</div>
 				<div id="commentContent">${i.ccontent }</div>
 			</div>
 		</c:forEach>
 	</div>
 	<div id="commentWrite">
-	
-	<!-- IMPORTANT!!!!!!!!!!!! -->
-	<!-- <c:set value="5" var="x"/>
-	<c:choose>
-		<c:when test="${x eq 1 }">YEAH</c:when>
-		<c:when test="${x ne 2 }">not equal</c:when>
-		<c:when test="${x gt 5 }">greater than 5</c:when>
-		<c:when test="${x lt 5 }">less than 5</c:when>
-		<c:when test="${x ge 5 }">greater than and equal 5</c:when>
-		<c:when test="${x le 5 }">less than and equal 5</c:when>
-		<c:otherwise>NOPE</c:otherwise>
-	</c:choose>
-	-->
-	<c:choose>
-		<c:when test="${sessionScope.id eq null }">
-			<div id="loginBtnBox">
-				<button id="loginBtn" onclick="location.href='./index.jsp'">로그인해주세요</button>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<div>
-				<form action="./comment" method="post" onsubmit="return check()">
-				<textarea name="comment" id="comment1"></textarea>
-				<input type="hidden" name="bno" value="<%=dto.getBno()%>">
-				<button type="submit" id="commentBtn">댓글쓰기</button>
-				</form>
-			</div>
-		</c:otherwise>
-	</c:choose>
-	
-	
+	<%
+	if(session.getAttribute("id") != null){
+	//로그인 했는지 여부를 여기서 판정해주세요. 
+	%>
+		<div>
+			<form action="">
+			<textarea></textarea>
+			<button id="commentBtn">댓글쓰기</button>
+			<input type="hidden" name="bno" value="<%=dto.getBno()%>">
+			</form>
+		</div>
+	<%} else { %>
+		<div id="loginBtnBox">
+			<button id="loginBtn" onclick="location.href='./index.jsp'">로그인해주세요</button>
+		</div>
+	<%} %>
 	</div>
 	<button onclick="location.href='./board.jsp'">게시판으로</button>
 

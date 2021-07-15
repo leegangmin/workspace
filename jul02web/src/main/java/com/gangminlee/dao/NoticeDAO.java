@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import com.gangminlee.db.DBConnection;
 import com.gangminlee.dto.BoardDTO;
 
-public class BoardDAO {
+public class NoticeDAO {
 	public BoardDTO detail(int bno) {
 		BoardDTO dto = new BoardDTO();
 

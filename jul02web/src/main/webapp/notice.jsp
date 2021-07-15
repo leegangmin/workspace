@@ -38,12 +38,11 @@ tr:hover {
 <%@ include file="./menu.jsp"%>
 	<h1>notice</h1>
 <%
-request.setCharacterEncoding("UTF-8");
-response.setCharacterEncoding("UTF-8");
 	//BoardDAO dao = new BoardDAO();
 	//ArrayList<BoardDTO> list = dao.list();
 	//서블릿에서 보내온 값 잡기
-	ArrayList<BoardDTO> list = (ArrayList<BoardDTO>) request.getAttribute("notice");
+	ArrayList<BoardDTO> list 
+			= (ArrayList<BoardDTO>) request.getAttribute("notice");
 %>	
 	<table>
 		<tr>
