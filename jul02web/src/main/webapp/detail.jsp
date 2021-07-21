@@ -10,7 +10,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>	
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+	
 
 
 <%
@@ -33,6 +35,9 @@ LogDAO.insertLog(ldto);
 <head>
 <meta charset="UTF-8">
 <title>글상세보기</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"
+	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+	crossorigin="anonymous"></script>
 <style type="text/css">
 #detail {
 	margin: 0 auto;
@@ -148,8 +153,16 @@ LogDAO.insertLog(ldto);
 	line-height:0px;
 	vertical-align: middle;
 }
+#comment_right {
+	display: inline-block;
+	float: right;
+	padding-right: 10px;
+}
+#comment_right img{
+	height: 20px;
+	vertical-align: text-bottom;
+}
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 function update(bno){
 	if(confirm("수정하시겠습니까?")){
@@ -168,6 +181,39 @@ function check(){
 		alert("댓글은 5자 이상이어야 합니다.");
 		$("#comment1").focus();
 		return false;
+	}
+}
+function likeup(cno, bno){
+	//다시 돌아오기 위해서 bno도 보냅니다 
+	location.href='./likeUp?cno='+cno+"&bno="+bno;
+}
+
+
+$(function(){
+	$(".likeup2").on("click", function(){
+		//alert("!");
+		var like = $(".likeup2").siblings("span").html();
+		alert(like);
+		$(".likeup2").siblings("span").html(Number(like)+1);
+	});
+	
+	$(".likeup1").click(function(){
+		var like = $("#likeup1").text();
+		$(this).text(Number(like) + 1);
+	});
+});
+
+function dele1(cno, bno){
+	//alert(cno + " : " + bno)
+	if(confirm("댓글을 삭제하시겠습니까")){
+		alert("삭제합니다.");
+		location.href="deleteComment?cno="+cno+"&bno="+bno;
+	}
+}
+function modify(cno, bno){
+	//alert(cno + " : " + bno);
+	if(confirm("댓글을 수정하시겠습니까")){
+		location.href="modifyComment?cno="+cno+"&bno="+bno;
 	}
 }
 </script>
@@ -200,32 +246,16 @@ function check(){
 	<div id="detail">
 		<div id="title">
 			<%=dto.getBtitle()%>
-			<c:set var="dtoId" value="<%=dto.getId() %>"/>
+			<c:set var="dtoId" value="<%=dto.getId()%>" />
 			<c:if test="${sessionScope.id eq dtoId }">
-			<img alt="delete" src="./delete.png" height="20px"
-				onclick="return del(<%=dto.getBno()%>);"
-				style="vertical-align: middle;"> <img alt="update"
-				src="./update.png" height="20px"
-				onclick="return update(<%=dto.getBno()%>); "
-				style="vertical-align: middle;">
+				<img alt="delete" src="./delete.png" height="20px"
+					onclick="return del(<%=dto.getBno()%>);"
+					style="vertical-align: middle;">
+				<img alt="update" src="./update.png" height="20px"
+					onclick="return update(<%=dto.getBno()%>); "
+					style="vertical-align: middle;">
 			</c:if>
 		</div>
-			
-			
-			<!-- 
-			<%
-			//if (session.getAttribute("id") != null && ((String) session.getAttribute("id")).equals(dto.getId())) {
-			%>
-			<img alt="delete" src="./delete.png" height="20px"
-				onclick="return del(<%=dto.getBno()%>);"
-				style="vertical-align: middle;"> <img alt="update"
-				src="./update.png" height="20px"
-				onclick="return update(<%=dto.getBno()%>); "
-				style="vertical-align: middle;">
-			<%
-			//}
-			%>
-			 -->
 		<div id="date">
 			<div id="date2"><%=dto.getName()%><br>(<%=dto.getId()%>)
 			</div>
@@ -234,54 +264,45 @@ function check(){
 		<div id="content"><%=dto.getBcontent()%></div>
 	</div>
 	<div id="comments">
-		<c:forEach items="<%=list %>" var="i">
+		<c:forEach items="<%=list%>" var="i">
 			<div id="comment">
-				<div id="commentId"> ${i.name } / ${i.id } / ${i.cdate } / ${i.cip } Like ${i.clike }</div>
+				<div id="commentId">
+					${i.cno } / ${i.name }<small>(${i.id })</small>
+					<c:if test="${i.id eq sessionScope.id }">
+						<img alt="delete" src="./delete.png" height="15px" onclick="dele1(${i.cno }, ${i.bno })">
+						<img alt="modify" src="./update.png" height="15px" onclick="modify(${i.cno }, ${i.bno })">
+					</c:if>
+					
+					<span id="comment_right">
+						<img alt="time" src="./img/time.png">
+						<fmt:formatDate value="${i.cdate }" pattern="yyyy-MM-dd HH:mm:ss"/> | 
+						<img  class="likeup2" alt="like" src="./img/like.png" onclick="likeup3(${i.cno }, ${i.bno })">
+						<span class="likeup1" id="likeup1">${i.clike }</span> | 
+						<img alt="ip" src="./img/ip.png" title="${i.cip }">
+					</span>
+				</div>
 				<div id="commentContent">${i.ccontent }</div>
 			</div>
 		</c:forEach>
 	</div>
 	<div id="commentWrite">
-	
-	<!-- IMPORTANT!!!!!!!!!!!! -->
-	<!-- <c:set value="5" var="x"/>
-	<c:choose>
-		<c:when test="${x eq 1 }">YEAH</c:when>
-		<c:when test="${x ne 2 }">not equal</c:when>
-		<c:when test="${x gt 5 }">greater than 5</c:when>
-		<c:when test="${x lt 5 }">less than 5</c:when>
-		<c:when test="${x ge 5 }">greater than and equal 5</c:when>
-		<c:when test="${x le 5 }">less than and equal 5</c:when>
-		<c:otherwise>NOPE</c:otherwise>
-	</c:choose>
-	-->
-	<c:choose>
-		<c:when test="${sessionScope.id eq null }">
-			<div id="loginBtnBox">
-				<button id="loginBtn" onclick="location.href='./index.jsp'">로그인해주세요</button>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<div>
-				<form action="./comment" method="post" onsubmit="return check()">
-				<textarea name="comment" id="comment1"></textarea>
-				<input type="hidden" name="bno" value="<%=dto.getBno()%>">
-				<button type="submit" id="commentBtn">댓글쓰기</button>
-				</form>
-			</div>
-		</c:otherwise>
-	</c:choose>
-	
-	
+		<c:choose>
+			<c:when test="${sessionScope.id ne null }">
+				<div>
+					<form action="./comment" method="post" onsubmit="return check()">
+						<textarea name="comment" id="comment1"></textarea>
+						<input type="hidden" name="bno" value="<%=dto.getBno()%>">
+						<button type="submit" id="commentBtn">댓글쓰기</button>
+					</form>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div id="loginBtnBox">
+					<button id="loginBtn" onclick="location.href='./index.jsp'">로그인해주세요</button>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	</div>
 	<button onclick="location.href='./board.jsp'">게시판으로</button>
-
-
-
-
-
-
-
-
 </body>
 </html>
