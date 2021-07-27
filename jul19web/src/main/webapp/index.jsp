@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${dto eq null }">
+	<!-- dto가 없다면 서블릿으로 던지기 -->
 	<c:redirect url="./index"/>
 </c:if>
 <!DOCTYPE html>
@@ -9,15 +10,9 @@
 <head>
 <meta charset="UTF-8">
 <title>index</title>
-<style type="text/css">
-small{
-	height: auto;
-	width: auto;
-	background-color: red;
-	color: white;
-	border-radius: 25%;
-}
-</style>
+<link href="./css/main.css" rel="stylesheet">
+<link href="./css/menu.css" rel="stylesheet">
+<link href="./css/index.css" rel="stylesheet">
 </head>
 <body>
 <div id="container">
@@ -55,7 +50,18 @@ small{
 		</li>
 		</c:forEach>
 	</ul>
-	<a href="./freeWrite">글쓰기</a>
+	<br>
+	<div id="paging" align="center">
+		<c:forEach begin="1" end="10" var="i">
+			<a href="./index?page=${i }">${i }</a> 
+		</c:forEach>
+	</div>
+	
+	
+	<c:if test="${sessionScope.id ne null }">
+	<div align="left"><a href="./freeWrite">글쓰기</a></div>
+	</c:if>
+	
 	</div>
 </div>
 </div>
