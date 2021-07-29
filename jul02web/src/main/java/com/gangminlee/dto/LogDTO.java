@@ -2,7 +2,7 @@ package com.gangminlee.dto;
 
 public class LogDTO {
 	private int log_no;
-	private String log_ip, log_taget, log_date, log_id, log_etc;
+	private String log_ip, log_target, log_date, log_id, log_etc;
 
 	public int getLog_no() {
 		return log_no;
@@ -20,12 +20,12 @@ public class LogDTO {
 		this.log_ip = log_ip;
 	}
 
-	public String getLog_taget() {
-		return log_taget;
+	public String getLog_target() {
+		return log_target;
 	}
 
-	public void setLog_taget(String log_taget) {
-		this.log_taget = log_taget;
+	public void setLog_target(String log_target) {
+		this.log_target = log_target;
 	}
 
 	public String getLog_date() {

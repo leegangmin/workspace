@@ -45,14 +45,14 @@
 				
 				<a href="./galleryDetail?gno=${l.gno }">
 					<c:choose>
-						<c:when test="${l.gthumbnail ne null}">
-							<img alt="thumb" src="./thumbnail/${l.gthumbnail }" style="vertical-align: middle; height: 80px;">
+						<c:when test="${l.gthumbnail eq null }">
+							<img alt="no image" src="img/noimage.jpg"  style="vertical-align: middle; height: 80px;">
 						</c:when>
 						<c:otherwise>
-							<img alt="no image" src="./img/noimage.jpg" style="vertical-align: middle; height: 80px;">											
+							<img alt="thumb" src="./thumbnail/${l.gthumbnail }" style="vertical-align: middle; height: 80px;">
 						</c:otherwise>
 					</c:choose>
-				
+					
 					${l.gtitle }
 				</a>
 				
@@ -68,7 +68,12 @@
 		<c:otherwise>찍어줄 글이 없습니다</c:otherwise>
 	</c:choose>
 	
-	
+	<div id="paging">
+		<!-- 이동할 페이지명을 변수처리 -->
+		<c:set var="pageName" value="gallery" scope="request"/>
+		<c:set var="PAGENUMBER" value="5" scope="request"/>
+		<c:import url="paging.jsp"/>
+	</div>
 	
 	<c:if test="${sessionScope.id ne null }">
 	<a href="./galleryWrite">글쓰기</a>

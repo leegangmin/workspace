@@ -23,7 +23,7 @@ public class GalleryDAO {
 			return galleryDAO;
 		}
 		//그 후 아래 실제 코드 작성하기
-		public ArrayList<HashMap<String, Object>> galleryList(){
+		public ArrayList<HashMap<String, Object>> galleryList(int page){
 			ArrayList<HashMap<String, Object>> galleryList = null;
 			//conn
 			Connection con = null;
@@ -33,15 +33,17 @@ public class GalleryDAO {
 			//rs
 			ResultSet rs = null;
 			//sql
-			String sql = "SELECT * FROM galleryview LIMIT 0, 10;";
+			String sql = "SELECT * FROM galleryview LIMIT ?, 5;";
 			
 			try {
 				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, page);
 				rs = pstmt.executeQuery();
 				if(rs != null) {				
 					galleryList = new ArrayList<HashMap<String,Object>>();
 					while (rs.next()) {
 						HashMap<String,Object> map = new HashMap<String, Object>();
+						map.put("totalcount", rs.getInt("totalcount"));
 						map.put("gno", rs.getInt("gno"));
 						map.put("gtitle", rs.getString("gtitle"));
 						map.put("gdate", rs.getString("gdate"));

@@ -21,16 +21,18 @@ public class LoginDAO {
 		Connection conn = DBConnection.dbConn();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "SELECT id, name FROM login WHERE pw=? AND id=?";
+		String sql = "SELECT id, name, grade FROM login WHERE pw=? AND id=? AND grade > 4";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, pw);
-			pstmt.setString(2, id);//감사합니다 ㅠㅠ
+			pstmt.setString(2, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				login = new HashMap<String, Object>();
 				login.put("id", rs.getString("id"));
 				login.put("name", rs.getString("name"));
+				//등급 추가
+				login.put("grade", rs.getInt("grade"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -14,15 +14,16 @@
 }
 
 #menuItem {
-	margin: 0 auto;
+	
 	height: 30px;
 	width: 130px;
+	background-color: rgb(34, 34, 34);
 	background-color: rgb(192, 192, 192);
 	margin: 10px;
 	text-align: center;
 	line-height: 30px;
-}
-
+}font-weight: 50;
+background-position: 1% 50%;margin: 0.625rem;background-size: 300% 300%;
 #loginbox {
 	margin: 0 auto;
 	width: 150px;

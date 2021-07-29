@@ -41,7 +41,9 @@ public class Login extends HttpServlet {
 		HashMap<String, Object> member = dao.login(id, pw);
 		
 		//임시로 찍어보기 
-		System.out.println(member);//확인 되었으면 아래 작업도 해주세요.
+		//System.out.println(member);//확인 되었으면 아래 작업도 해주세요.
+		//출력문은 제거
+		//이클립스 노란색 경고 되도록 안 뜨게 하기.
 		
 		//아이디 비번이 일치한다면
 		if(member != null) {
@@ -49,6 +51,10 @@ public class Login extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setAttribute("id", member.get("id"));
 			session.setAttribute("name", member.get("name"));
+			//9등급이면 세션 만들기
+			if((int)member.get("grade") == 9) {
+				session.setAttribute("grade", member.get("grade"));
+			}
 			
 			//log남기기
 			HashMap<String, Object> log = new HashMap<String, Object>();

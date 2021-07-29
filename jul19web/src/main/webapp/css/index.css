@@ -68,11 +68,3 @@ ul, li{
 #ulTable > li > ul > li:first-child +li + li + li + li{
 	width: 10%;
 }
-#paging{
-	display: block;
-	margin:0 auto;
-	width: 100%;
-	height: 50px;
-	line-height: 50px;
-	background-color: #c5c5c5;
-}
